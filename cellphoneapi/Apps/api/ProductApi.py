@@ -19,7 +19,7 @@ class ProductList(generics.ListAPIView):
 
     def post(self, request, *args, **kwargs):
         phone_object = request.data
-        new_product = ProductService.post_product(phone_object)
+        new_product = ProductService.add_product(phone_object)
         serializer = ProductSerializer(data=new_product)
         if serializer.is_valid():
             serializer.save()
