@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "cellphony-api"
+version = "0.1.0"
+description = ""
+authors = ["Quang Pham <quangpham.245@protonmail.com>"]
+readme = "README.md"
+packages = [{include = "cellphony_api"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Django = "^4.1.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
