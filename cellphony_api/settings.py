@@ -46,7 +46,10 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware'
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # PROJECT'S SPECIFIC MIDDLEWARES
+    'middleware.http_error_handling_middleware.http_error_handling_middleware.HttpErrorHandlingMiddleware'
 ]
 
 ROOT_URLCONF = 'cellphony_api.urls'
