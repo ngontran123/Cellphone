@@ -13,9 +13,11 @@ class ProductList(generics.ListAPIView):
     serializer_class = ProductSerializer
 
     def get(self, *args, **kwargs):
-        products = ProductService.get_all_product()
+        is_products, products = ProductService.get_all_product()
+        if not is_products:
+            return Response(products)
         serializer = ProductSerializer(products, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
         phone_object = request.data
@@ -30,24 +32,20 @@ class ProductList(generics.ListAPIView):
 class ProductListDetail(generics.ListAPIView):
     serializer_class = ProductSerializer
 
-    def get(self, id, *args, **kwargs):
-        try:
-            id = self.kwargs['Id']
-            if id is not None:
-                print("fuck")
-                print(id)
-                print("------------")
-                product = ProductService.get_product_by_id(id)
-                serializer = ProductSerializer(product)
-        except:
-            return Response({"error": "Cannot find this id"})
-        return Response(serializer.data)
+    def get(self, request, id, *args, **kwargs):
+        is_product, product = ProductService.get_product_by_id(id)
+        if not is_product:
+            return Response(product)
+        serializer = ProductSerializer(product)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def put(self, request, *args, **kwargs):
+    def put(self,request,id,*args, **kwargs):
         try:
-            id = self.kwargs['Id']
-            phone = ProductService.get_product_by_id(id)
-            serializer = ProductSerializer(phone, data=request.data)
+            object=request.data
+            is_product, product = ProductService.get_product_by_id(id)
+            if not is_product:
+                return Response(product)
+            serializer = ProductSerializer(product, data=object)
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_200_OK)
@@ -58,6 +56,63 @@ class ProductListDetail(generics.ListAPIView):
 
     def delete(self, request, *args, **kwargs):
         id = self.kwargs['Id']
-        phone = ProductService.get_product_by_id(id)
+        is_phone, phone = ProductService.get_product_by_id(id)
+        if not is_phone:
+            return Response(phone)
         phone.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ProductNameDetail(generics.ListAPIView):
+    serializer_class = ProductSerializer
+
+    def get(self, request, pname, *args, **kwargs):
+        is_product, product = ProductService.get_product_by_name(pname)
+        if not is_product:
+            return Response(product)
+        serializer = ProductSerializer(product, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ProductBrandDetail(generics.ListAPIView):
+    serializer_class = ProductSerializer
+
+    def get(self, request, brand_name, *args, **kwargs):
+        is_product, product = ProductService.get_product_by_brand(brand_name)
+        if not is_product:
+            return Response(product)
+        serializer = ProductSerializer(product, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ProductByPriceDetail(generics.ListAPIView):
+    serializer_class = ProductSerializer
+
+    def get(self, request, from_price, to_price, *args, **kwargs):
+        is_product, products = ProductService.get_product_between_price(from_price, to_price)
+        if not is_product:
+            return Response(products)
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ProductPaginationDetail(generics.GenericAPIView):
+    serializer_class = ProductSerializer
+
+    def get(self, request, page, lim, *args, **kwargs):
+        is_product, products = ProductService.pagination(page, lim)
+        if not is_product:
+            return Response(products)
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ProductAvailable(generics.GenericAPIView):
+    serializer_class = ProductSerializer
+
+    def get(self, request, sta, *args, **kwargs):
+        is_product, products = ProductService.check_out_of_stock(sta)
+        if not is_product:
+            return Response(products)
+        serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

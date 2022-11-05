@@ -11,7 +11,6 @@ class User(AbstractUser):
     password = models.CharField(max_length=30,unique=True, blank=True, null=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
-    object = CustomeUserService()
 
     def __str__(self):
         return self.email
