@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from ..shemas.OrderSchema import OrderSchema
 from ..shemas.OrderStatusSchema import OrderStatusSchema
+from ..serializers.OrderStatusSerializer import OrderStatusSerializer
 from rest_framework.exceptions import ValidationError
 from ..services import UserService
 
@@ -12,7 +13,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response['status'] = OrderStatusSchema(instance.status).data
+        response['status'] = OrderStatusSerializer(instance.status).data
         return response
 
     def validate(self, data):

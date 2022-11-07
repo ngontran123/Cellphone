@@ -10,7 +10,8 @@ from rest_framework.routers import DefaultRouter
 class CartItemList(generics.ListAPIView):
     serializer_class = CartItemSerializer
 
-    def get(self, *args, **kwargs):
+    def get(self, request,*args, **kwargs):
+
         is_cart_item, cart_item = CartItemsService.get_all_cart_items()
         if not is_cart_item:
             return Response(cart_item)

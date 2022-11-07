@@ -6,6 +6,7 @@ from rest_framework import generics, status
 from rest_framework.exceptions import AuthenticationFailed
 from ..serializers.UserSerializer import UserSerializer, LoginSerializer
 from ..services import UserService
+from django.contrib.auth.hashers import make_password
 
 
 class Register(generics.GenericAPIView):
@@ -105,3 +106,26 @@ class UserViewList(generics.ListAPIView):
             return Response(users)
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UserHandle(generics.GenericAPIView):
+    serializer_class = UserSerializer
+
+    def put(self, request, username, *args, **kwargs):
+        is_user, user = UserService.find_user_by_name(username)
+        if not is_user:
+            return Response(user)
+        user_object = request.data
+        serializer = UserSerializer(user, data=user_object)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def delete(self, request, username, *args, **kwargs):
+        is_user, user = UserService.find_user_by_name(username)
+        if not is_user:
+            return Response(user)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

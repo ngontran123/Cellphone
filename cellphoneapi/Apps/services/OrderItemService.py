@@ -20,4 +20,9 @@ def get_order_item_by_id(id) -> Tuple[bool, Union[str, OrderItemSchema]]:
     return True, order_item
 
 
-d
+def get_order_item_by_order_id(order_id)->Tuple[bool,Union[str,List[OrderItemSchema]]]:
+    try:
+     order_items=OrderItemSchema.objects.filter(order__id=order_id)
+     return True,order_items
+    except Exception as e:
+        return False,MSG_TEMPLATE[ErrorCode.QUERY_DATA_ERROR]

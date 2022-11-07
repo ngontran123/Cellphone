@@ -1,10 +1,12 @@
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics, status
 from ..serializers.ProductSerializer import ProductSerializer
 from ..shemas.ProductSchema import Product
-from ..services import ProductService
+from ..services import ProductService,UserService
 from rest_framework.routers import DefaultRouter
+from ..serializers.ProductDetailSerializer import ProductDetailSerializer
 
 router = DefaultRouter()
 
@@ -20,6 +22,9 @@ class ProductList(generics.ListAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
+        role_id = UserService.get_role_by_token(request)
+        if role_id != 1:
+            raise AuthenticationFailed('You dont have the right to access this feature.')
         phone_object = request.data
         new_product = ProductService.add_product(phone_object)
         serializer = ProductSerializer(data=new_product)
@@ -39,9 +44,12 @@ class ProductListDetail(generics.ListAPIView):
         serializer = ProductSerializer(product)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def put(self,request,id,*args, **kwargs):
+    def put(self, request, id, *args, **kwargs):
+        role_id = UserService.get_role_by_token(request)
+        if role_id != 1:
+            raise AuthenticationFailed('You dont have the right to access this feature.')
         try:
-            object=request.data
+            object = request.data
             is_product, product = ProductService.get_product_by_id(id)
             if not is_product:
                 return Response(product)
@@ -54,8 +62,10 @@ class ProductListDetail(generics.ListAPIView):
         except:
             return Response('error:Cannot find this product.')
 
-    def delete(self, request, *args, **kwargs):
-        id = self.kwargs['Id']
+    def delete(self, request, id, *args, **kwargs):
+        role_id = UserService.get_role_by_token(request)
+        if role_id != 1:
+            raise AuthenticationFailed('You dont have the right to access this feature.')
         is_phone, phone = ProductService.get_product_by_id(id)
         if not is_phone:
             return Response(phone)
@@ -115,4 +125,15 @@ class ProductAvailable(generics.GenericAPIView):
         if not is_product:
             return Response(products)
         serializer = ProductSerializer(products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ProductDetailView(generics.GenericAPIView):
+    serializer_class = ProductDetailSerializer
+
+    def get(self, request, id, *args, **kwargs):
+        is_pd, pd = ProductService.get_product_detail_by_id(id)
+        if not is_pd:
+            return Response(pd)
+        serializer = ProductDetailSerializer(pd)
         return Response(serializer.data, status=status.HTTP_200_OK)

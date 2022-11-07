@@ -1,6 +1,7 @@
 from ..shemas.ProductSchema import Product
 from ..constants.error_code import ErrorCode, MSG_TEMPLATE
 from typing import Tuple, List, Union
+from ..shemas.ProductDetailSchema import ProductDetail
 
 
 def get_all_product() -> Tuple[bool, Union[str, Product]]:
@@ -29,9 +30,10 @@ def add_product(request):
         'price': request['price'],
         'status': request['status'],
         'width': request['width'],
+        'weight':request['weight'],
         'height': request['height'],
         'image_url': request['image_url'],
-        'color': request['color']
+        'pd_detail': request['pd_detail']
 
     }
     return new_product
@@ -76,8 +78,8 @@ def pagination(page, lim) -> Tuple[bool, Union[str, Product]]:
         lim = int(lim)
         page = int(page)
         skip = (page - 1) * lim
-        if page<0 or lim <0:
-            return False,'Cannot have negative value'
+        if page < 0 or lim < 0:
+            return False, 'Cannot have negative value'
         products = Product.objects.all()[skip:skip + lim]
         return True, products
     except Exception as e:
@@ -90,3 +92,9 @@ def check_out_of_stock(status) -> Tuple[bool, Union[str, Product]]:
         return False, MSG_TEMPLATE[ErrorCode.NOT_FOUND]
     return True, products
 
+
+def get_product_detail_by_id(id) -> Tuple[bool, Union[str, ProductDetail]]:
+    product_detail = ProductDetail.objects.filter(id=id).first()
+    if not product_detail:
+        return False, MSG_TEMPLATE[ErrorCode.NOT_FOUND]
+    return True, product_detail
