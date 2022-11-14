@@ -1,13 +1,8 @@
 from rest_framework import serializers
 
-from ..services import ProductService, CartService
-from ..shemas.CartSchema import Cart
-from ..shemas.ProductSchema import Product
 from ..shemas.CartItemSchema import CartItem
-from ..shemas.CartSchema import Cart
 from ..serializers.ProductSerializer import ProductSerializer
 from ..serializers.CartSerializer import CartSerializer
-from rest_framework.exceptions import ValidationError
 
 
 class CartItemSerializer(serializers.ModelSerializer):

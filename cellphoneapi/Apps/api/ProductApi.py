@@ -2,7 +2,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import generics, status
-from ..serializers.ProductSerializer import ProductSerializer
+from ..serializers.ProductSerializer import ProductSerializer,ProductPaginationSerializer
 from ..shemas.ProductSchema import Product
 from ..services import ProductService,UserService
 from rest_framework.routers import DefaultRouter
@@ -113,8 +113,7 @@ class ProductPaginationDetail(generics.GenericAPIView):
         is_product, products = ProductService.pagination(page, lim)
         if not is_product:
             return Response(products)
-        serializer = ProductSerializer(products, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(products, status=status.HTTP_200_OK)
 
 
 class ProductAvailable(generics.GenericAPIView):

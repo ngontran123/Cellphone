@@ -1,7 +1,7 @@
 from django.urls import path
-from ..api.OrderStatusApi import OrdreStatusListView,OrderStatusByName
+from ..api.OrderStatusApi import OrderStatusListView, OrderStatusByName
 
 urlpatterns = [
-    path('', OrdreStatusListView.as_view()),
-    path('<str:name>',OrderStatusByName.as_view())
+    path('', OrderStatusListView.as_view()),
+    path('<str:name>', OrderStatusByName.as_view())
 ]

@@ -12,3 +12,12 @@ class ProductSerializer(serializers.ModelSerializer):
         response = super().to_representation(instance)
         response['pd_detail'] = ProductDetailSerializer(instance.pd_detail).data
         return response
+
+
+class ProductPaginationSerializer(serializers.ModelSerializer):
+    page = serializers.ReadOnlyField()
+
+    class Meta:
+        model = Product
+        fields = ['brand', 'name', ' description', 'price', 'status', 'width', 'height', 'image_url', 'weight',
+                  'pd_detail', 'page']

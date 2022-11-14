@@ -1,7 +1,10 @@
+import math
+
 from ..shemas.ProductSchema import Product
 from ..constants.error_code import ErrorCode, MSG_TEMPLATE
 from typing import Tuple, List, Union
 from ..shemas.ProductDetailSchema import ProductDetail
+from ..serializers.ProductSerializer import ProductSerializer
 
 
 def get_all_product() -> Tuple[bool, Union[str, Product]]:
@@ -30,7 +33,7 @@ def add_product(request):
         'price': request['price'],
         'status': request['status'],
         'width': request['width'],
-        'weight':request['weight'],
+        'weight': request['weight'],
         'height': request['height'],
         'image_url': request['image_url'],
         'pd_detail': request['pd_detail']
@@ -41,7 +44,7 @@ def add_product(request):
 
 def get_product_by_name(name) -> Tuple[bool, Union[str, Product]]:
     try:
-        product = Product.objects.filter(name='Huawei Fake')
+        product = Product.objects.filter(name=name)
         if not product:
             return False, MSG_TEMPLATE[ErrorCode.NOT_FOUND]
     except Exception as e:
@@ -73,15 +76,20 @@ def get_product_between_price(from_price, to_price) -> Tuple[bool, Union[str, Pr
     return True, products
 
 
-def pagination(page, lim) -> Tuple[bool, Union[str, Product]]:
+def pagination(page, lim):
     try:
         lim = int(lim)
         page = int(page)
         skip = (page - 1) * lim
         if page < 0 or lim < 0:
             return False, 'Cannot have negative value'
-        products = Product.objects.all()[skip:skip + lim]
-        return True, products
+        products = Product.objects.all()
+        products_skip = products[skip:skip + lim]
+        dict_products = {}
+        products_serial = ProductSerializer(products_skip, many=True)
+        dict_products['products'] = products_serial.data
+        dict_products['page'] = math.ceil(len(products) / lim)
+        return True, dict_products
     except Exception as e:
         return False, 'Cannot paginating'
 

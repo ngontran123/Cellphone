@@ -5,7 +5,7 @@ from ..serializers.OrderStatusSerializer import OrderStatusSerializer
 from ..services import OrderStatusService, UserService
 
 
-class OrdreStatusListView(generics.ListAPIView):
+class OrderStatusListView(generics.ListAPIView):
     serializer_class = OrderStatusSerializer
 
     def get(self, request, *args, **kwargs):

@@ -1,9 +1,7 @@
 from rest_framework import serializers
 
-from ..services import ProductService, CartService
 from ..shemas.OrderItemSchema import OrderItemSchema
-from ..shemas.OrderSchema import OrderSchema
-from rest_framework.exceptions import ValidationError
+
 from ..serializers.ProductSerializer import ProductSerializer
 from ..serializers.OrderSerializer import OrderSerializer
 
