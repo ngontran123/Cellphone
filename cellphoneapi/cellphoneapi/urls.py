@@ -34,5 +34,5 @@ urlpatterns = [
     path('order/', include('Apps.paths.OrderPath')),
     path('product_detail/', include('Apps.paths.ProductDetailPath')),
     path('role/', include('Apps.paths.RolePath')),
-    path('order_item', include('Apps.paths.OrderItemPath'))
+    path('order_item/', include('Apps.paths.OrderItemPath'))
 ]

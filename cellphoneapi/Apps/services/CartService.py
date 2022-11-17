@@ -28,7 +28,7 @@ def get_cart_by_id(id) -> Tuple[bool, Union[str, Cart]]:
     return True, cart
 
 
-def mapping_cart(cart_obj,username):
+def mapping_cart(cart_obj, username):
     cart_object = {
         'username': username,
         'created_date': datetime.datetime.now(),
@@ -41,7 +41,7 @@ def mapping_cart(cart_obj,username):
 
 def get_cart_by_username(username) -> Tuple[bool, Union[str, Cart]]:
     try:
-        cart = Cart.objects.filter(username=username).first()
+        cart = Cart.objects.filter(username__icontains=username).first()
         if not cart:
             return False, MSG_TEMPLATE[ErrorCode.NOT_FOUND]
     except Exception as e:

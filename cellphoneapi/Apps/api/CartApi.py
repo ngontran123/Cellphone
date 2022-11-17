@@ -74,6 +74,8 @@ class CartListDetail(generics.ListAPIView):
         except Exception as e:
             return Response({'error': 'Cannot get field from request'})
 
+
+class DeleteOrUpdateView(generics.GenericAPIView):
     def delete(self, request, *args, **kwargs):
         role_id = UserService.get_role_by_token(request)
         if role_id != 2:
@@ -107,7 +109,7 @@ class CartListDetail(generics.ListAPIView):
                 return Response(order)
             for item in cart_items:
                 order_items_object = {
-                    'pd': item.pd,
+                    'pd': item.pd.id,
                     'order': order.id,
                     'price': item.price,
                     'weight': item.weight,
@@ -127,13 +129,13 @@ class CartListDetail(generics.ListAPIView):
 
 class CartByUserName(generics.ListAPIView):
 
-    def get(self, request, username, *args, **kwargs):
+    def get(self, request,*args, **kwargs):
         role_id = UserService.get_role_by_token(request)
         if role_id != 2:
             raise AuthenticationFailed('You dont have the right to access this feature.')
+        username=UserService.get_username_by_token(request)
         is_cart, cart = CartService.get_cart_by_username(username)
         if not is_cart:
             return Response(cart)
         serializer = CartSerializer(cart)
         return Response(serializer.data, status=status.HTTP_200_OK)
-

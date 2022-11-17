@@ -1,11 +1,9 @@
 import jwt
-
 from ..models import User
 from ..constants.error_code import ErrorCode, MSG_TEMPLATE
 from typing import Tuple, List, Union
-from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
-from django.contrib.auth.hashers import make_password
+
 
 def find_user_by_email(email) -> Tuple[bool, Union[str, User]]:
     user = User.objects.filter(email=email).first()
@@ -15,7 +13,7 @@ def find_user_by_email(email) -> Tuple[bool, Union[str, User]]:
 
 
 def find_user_by_name(name) -> Tuple[bool, Union[str, User]]:
-    user = User.objects.filter(username=name).first()
+    user = User.objects.filter(username__icontains=name).first()
     if not user:
         return False, MSG_TEMPLATE[ErrorCode.NOT_FOUND]
     return True, user
@@ -63,5 +61,3 @@ def get_role_by_token(request):
         raise ValidationError('Cannot find this user')
     role = user_find.role_id.id
     return role
-
-

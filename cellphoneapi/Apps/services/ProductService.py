@@ -44,7 +44,7 @@ def add_product(request):
 
 def get_product_by_name(name) -> Tuple[bool, Union[str, Product]]:
     try:
-        product = Product.objects.filter(name=name)
+        product = Product.objects.filter(name__icontains=name)
         if not product:
             return False, MSG_TEMPLATE[ErrorCode.NOT_FOUND]
     except Exception as e:
@@ -54,7 +54,7 @@ def get_product_by_name(name) -> Tuple[bool, Union[str, Product]]:
 
 def get_product_by_brand(brand) -> Tuple[bool, Union[str, Product]]:
     try:
-        product = Product.objects.filter(brand=brand)
+        product = Product.objects.filter(brand__icontains=brand)
         if not product:
             return False, MSG_TEMPLATE[ErrorCode.NOT_FOUND]
     except Exception as e:

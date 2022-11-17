@@ -12,7 +12,7 @@ def get_all_order_status() -> Tuple[bool, Union[str, OrderStatusSchema]]:
 
 
 def get_order_status_by_name(name) -> Tuple[bool, Union[str, OrderStatusSchema]]:
-    order_status = OrderStatusSchema.objects.filter(status_name=name).first()
+    order_status = OrderStatusSchema.objects.filter(status_name__icontains=name).first()
     if not order_status:
         return False, MSG_TEMPLATE[ErrorCode.NOT_FOUND]
     return True, order_status

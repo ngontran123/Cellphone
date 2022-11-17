@@ -30,8 +30,8 @@ class CartItemList(generics.ListAPIView):
         price = product.price
         weight = product.weight
         quantity = int(cart_item_object['quantity'])
-        total_price = int(cart.total_price) + (price * quantity)
-        total_weight = int(cart.total_weight) + (weight * quantity)
+        total_price = int(cart.total_price) + (int(price) * int(quantity))
+        total_weight = int(cart.total_weight) + (int(weight) * int(quantity))
         car_obj = {
             'username': cart.username,
             'created_date': cart.created_date,

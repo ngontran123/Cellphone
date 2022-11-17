@@ -21,7 +21,7 @@ def get_order_by_id(id) -> Tuple[bool, Union[str, OrderSchema]]:
 
 
 def get_order_by_username(username) -> Tuple[bool, Union[str, OrderSchema]]:
-    order = OrderSchema.objects.filter(username=username).first()
+    order = OrderSchema.objects.filter(username__icontains=username).first()
     if not order:
         return False, MSG_TEMPLATE[ErrorCode.NOT_FOUND]
     return True, order
@@ -85,6 +85,14 @@ def get_history_order_by_user(username) -> Tuple[bool, Union[str, List[OrderSche
 def get_order_by_shipper(shipper) -> Tuple[bool, Union[str, List[OrderSchema]]]:
     try:
         orders = OrderSchema.objects.filter(username=shipper, status__id__range=[2, 4])
+        return True, orders
+    except Exception as e:
+        return False, MSG_TEMPLATE[ErrorCode.QUERY_DATA_ERROR]
+
+
+def get_order_by_status(status) -> Tuple[bool, Union[str, List[OrderSchema]]]:
+    try:
+        orders = OrderSchema.objects.filter(status__id=status)
         return True,orders
     except Exception as e:
         return False, MSG_TEMPLATE[ErrorCode.QUERY_DATA_ERROR]

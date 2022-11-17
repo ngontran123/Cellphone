@@ -19,7 +19,7 @@ def get_role_by_id(id) -> Tuple[bool, Union[str, Role]]:
 
 
 def get_role_by_name(name) -> Tuple[bool, Union[str, Role]]:
-    role = Role.objects.filter(role_name=name).first()
+    role = Role.objects.filter(role_name__icontains=name).first()
     if not role:
         return False, MSG_TEMPLATE[ErrorCode.NOT_FOUND]
     return True, role

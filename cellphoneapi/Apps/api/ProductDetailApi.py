@@ -14,7 +14,7 @@ class ProductDetailListView(generics.ListAPIView):
         if not is_pd:
             return Response(pd)
         serializer = ProductDetailSerializer(pd, many=True)
-        return Response(serializer, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
         role_id = UserService.get_role_by_token(request)

@@ -21,8 +21,8 @@ class OrderStatusListView(generics.ListAPIView):
         if role_id != 1:
             raise AuthenticationFailed('You dont have the right to access this feature.')
         object = request.data
-        status_name=object['status_name']
-        is_status,status_name=OrderStatusService.get_order_status_by_name(status_name)
+        status_name = object['status_name']
+        is_status, status_name = OrderStatusService.get_order_status_by_name(status_name)
         if is_status:
             return Response('This status has existed in your database.')
         serializer = OrderStatusSerializer(data=object)
